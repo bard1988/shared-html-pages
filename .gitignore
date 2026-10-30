@@ -1,0 +1,7 @@
+node_modules/
+app/config.js
+database.rules.json
+public/app.js
+.firebaserc
+firebase-debug.log
+backups/

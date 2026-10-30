@@ -1,0 +1,51 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "policies": {
+      "$page": {
+        ".read": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'",
+        ".write": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'"
+      }
+    },
+    "meta": {
+      "$page": {
+        ".read": true,
+        ".write": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'"
+      }
+    },
+    "owned": {
+      ".read": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'",
+      ".write": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'"
+    },
+    "pages": {
+      "$page": {
+        ".read": "(auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com') || root.child('policies').child($page).child('mode').val() == 'public' || (auth != null && root.child('policies').child($page).child('mode').val() == 'password' && root.child('policies').child($page).child('passwordUid').val() == auth.uid) || (auth != null && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com' && root.child('policies').child($page).child('readers').val().contains('|' + auth.token.email + '|')) || (auth != null && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com' && root.child('policies').child($page).child('editors').val().contains('|' + auth.token.email + '|'))",
+        ".write": "auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'",
+        ".validate": "newData.hasChildren(['title','html','state'])",
+        "title": {
+          ".validate": "newData.isString() && newData.val().length <= 100"
+        },
+        "type": {
+          ".validate": "newData.isString() && newData.val().matches(/^[a-z0-9-]{1,40}$/)"
+        },
+        "html": {
+          ".validate": "newData.isString() && newData.val().length <= 100000"
+        },
+        "state": {
+          ".write": "data.parent().exists() && ((auth != null && auth.token.email == 'owner@example.com' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com') || (root.child('policies').child($page).child('mode').val() == 'public' && root.child('policies').child($page).child('publicEdit').val() == true) || ((auth != null && root.child('policies').child($page).child('mode').val() == 'password' && root.child('policies').child($page).child('passwordUid').val() == auth.uid) && root.child('policies').child($page).child('passwordEdit').val() == true) || (auth != null && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com' && root.child('policies').child($page).child('editors').val().contains('|' + auth.token.email + '|')))",
+          ".validate": "newData.hasChildren(['_ready'])",
+          "_ready": {
+            ".validate": "newData.val() == true"
+          },
+          "$key": {
+            ".validate": "$key.matches(/^[a-zA-Z0-9_-]{1,80}$/) && (newData.isBoolean() || newData.isNumber() || (newData.isString() && newData.val().length <= 16000))"
+          }
+        },
+        "$other": {
+          ".validate": false
+        }
+      }
+    }
+  }
+}

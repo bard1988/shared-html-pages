@@ -1,0 +1,11 @@
+const fs=require('fs');
+const email=process.env.OWNER_EMAIL||'owner@example.com';
+const out=process.argv[2]||'database.rules.json';
+const owner="auth != null && auth.token.email == '"+email+"' && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com'";
+const policy="root.child('policies').child($page)";
+const named=(role)=>`(auth != null && auth.token.email_verified == true && auth.token.firebase.sign_in_provider == 'google.com' && ${policy}.child('${role}').val().contains('|' + auth.token.email + '|'))`;
+const pass=`(auth != null && ${policy}.child('mode').val() == 'password' && ${policy}.child('passwordUid').val() == auth.uid)`;
+const read=`(${owner}) || ${policy}.child('mode').val() == 'public' || ${pass} || ${named('readers')} || ${named('editors')}`;
+const write=`(${owner}) || (${policy}.child('mode').val() == 'public' && ${policy}.child('publicEdit').val() == true) || (${pass} && ${policy}.child('passwordEdit').val() == true) || ${named('editors')}`;
+const rules={'.read':false,'.write':false,policies:{$page:{'.read':owner,'.write':owner}},meta:{$page:{'.read':true,'.write':owner}},owned:{'.read':owner,'.write':owner},pages:{$page:{'.read':read,'.write':owner,'.validate':"newData.hasChildren(['title','html','state'])",title:{'.validate':'newData.isString() && newData.val().length <= 100'},type:{'.validate':"newData.isString() && newData.val().matches(/^[a-z0-9-]{1,40}$/)"},html:{'.validate':'newData.isString() && newData.val().length <= 100000'},state:{'.write':`data.parent().exists() && (${write})`,'.validate':"newData.hasChildren(['_ready'])",_ready:{'.validate':'newData.val() == true'},$key:{'.validate':"$key.matches(/^[a-zA-Z0-9_-]{1,80}$/) && (newData.isBoolean() || newData.isNumber() || (newData.isString() && newData.val().length <= 16000))"}},$other:{'.validate':false}}}};
+fs.writeFileSync(out,JSON.stringify({rules},null,2));

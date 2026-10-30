@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@firebase/rules-unit-testing": "^5.0.2",
+    "esbuild": "^0.28.2",
+    "firebase": "^12.7.0",
+    "firebase-tools": "^15.34.1",
+    "playwright": "^1.64.1"
+  }
+}

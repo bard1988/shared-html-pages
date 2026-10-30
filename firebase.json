@@ -1,0 +1,54 @@
+{
+  "hosting": {
+    "public": "public",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "headers": [
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Referrer-Policy",
+            "value": "no-referrer"
+          },
+          {
+            "key": "X-Content-Type-Options",
+            "value": "nosniff"
+          },
+          {
+            "key": "Content-Security-Policy",
+            "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://apis.google.com; style-src 'self' 'unsafe-inline'; frame-src 'self' https://*.firebaseapp.com; connect-src 'self' https://*.googleapis.com https://*.firebaseio.com https://*.firebasedatabase.app wss://*.firebasedatabase.app; img-src 'self' data:; object-src 'none'; base-uri 'self'"
+          }
+        ]
+      },
+      {
+        "source": "**",
+        "headers": [
+          {
+            "key": "Cache-Control",
+            "value": "no-cache, max-age=0, must-revalidate"
+          }
+        ]
+      }
+    ]
+  },
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "supportEmail": "owner@example.com",
+        "authorizedRedirectUris": [
+          "https://your-project-id.firebaseapp.com/__/auth/handler",
+          "https://your-project-id.web.app/__/auth/handler"
+        ],
+        "oAuthBrandDisplayName": "Shared HTML Pages"
+      }
+    }
+  }
+}
